@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 case $KPSCREENSIZE in
     2.8)
         BACKGROUND="Pictures/Kali-Pi-2.8.jpg"

@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 ######################################################
 ##                                                  ##
 ## Installation of PAN AP on non-Sticky-Fingers OS  ##

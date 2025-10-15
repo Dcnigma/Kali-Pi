@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 script="/home/pi/pitftmenu/menu_pause.py"
 setterm -term linux -back default -fore white -clear all
 /usr/bin/env perl /usr/local/bin/pulledpork.pl -c /usr/local/etc/snort/pulledpork.conf -lT

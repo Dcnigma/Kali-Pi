@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 cp pan-client.network /etc/systemd/network/
 cp pan@.service /etc/systemd/system/
 

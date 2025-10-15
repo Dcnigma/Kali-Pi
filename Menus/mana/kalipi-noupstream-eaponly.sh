@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 #!/bin/bash
 ### BEGIN INIT INFO
 # Provides:          firelamb
@@ -60,8 +61,8 @@ start() {
             sed -i "s/^set INTERFACE .*$/set INTERFACE $phy/" /etc/mana-toolkit/karmetasploit.rc
             $cmdline & echo $! > ${PIDFILE}
             sleep 5
-            ifconfig $phy
-            ifconfig $phy 10.0.0.1 netmask 255.255.255.0
+            ip addr show $phy
+            ip addr show $phy 10.0.0.1 netmask 255.255.255.0
             route add -net 10.0.0.0 netmask 255.255.255.0 gw 10.0.0.1
 
             dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo

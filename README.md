@@ -1,3 +1,5 @@
+**Updated for Kali Linux 2025.3 (Raspberry Pi 4) — automated modernization**
+Compatibility: Raspberry Pi 4, Bookworm-based Kali (2025.3). Scripts converted to Python 3 and systemd where applicable.
 # KALI-PI Launcher
 
 Simple touch menu for Raspberry Pi projects using a 3.5" (480x320) or 2.8" (320x240) touch screen based on garthvh's original project.
@@ -90,9 +92,9 @@ gpg -a --export 9165938D90FDDD2E | sudo apt-key add -
 
 Remove the offending package and replace it with the working one:
 ```
-sudo apt-get update
-sudo apt-get remove libsdl1.2debian python-pygame
-apt-get install libsdl-image1.2 libsdl-mixer1.2 libsdl-ttf2.0-0 libsdl1.2debian libsmpeg0 python-pygame
+sudo apt update
+sudo apt remove libsdl1.2debian python-pygame
+DEBIAN_FRONTEND=noninteractive apt install -y libsdl-image1.2 libsdl-mixer1.2 libsdl-ttf2.0-0 libsdl1.2debian libsmpeg0 python-pygame
 sudo apt-mark hold libsdl1.2debian
 ```
 

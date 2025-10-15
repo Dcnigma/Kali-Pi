@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 ### BEGIN INIT INFO
 # Provides:          firelamb
 # Required-Start:    $remote_fs $syslog

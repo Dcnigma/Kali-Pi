@@ -1,10 +1,25 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import kalipi
 from kalipi import *
 
 
 #############################
 ##    Local Functions      ##
+
+# Toggle ntopng
+def toggle_ntopng():
+    try:
+        status = kalipi.run_cmd("/usr/sbin/service ntopng status")
+        if ("is running" in status) or ("active (running)") in status:
+            kalipi.run_cmd("/usr/sbin/service ntopng stop")
+            kalipi.run_cmd("/bin/systemctl stop redis-server")
+            return False
+        else:
+            kalipi.run_cmd("/bin/systemctl start redis-server")
+            kalipi.run_cmd("/usr/sbin/service ntopng start")
+            return True
+    except:
+        return False
 
 
 ##    Local Functions      ##
@@ -15,16 +30,17 @@ from kalipi import *
 ##        Buttons          ##
 
 # define all of the buttons
-titleButton = Button("                      EvilAP - Mana", originX, originX, buttonHeight, buttonWidth * 3 + spacing * 2, tron_blu, tron_ora, titleFont)
-button1 = Button(labelPadding * " " + "   NAT Full", originX, originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button2 = Button(labelPadding * " " + " NAT Simple", originX + buttonWidth + spacing, originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button3 = Button(labelPadding * " " + "  No Upstr.", originX + (buttonWidth * 2) + (spacing * 2), originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button4 = Button(labelPadding * " " + "   NU-EAP", originX, originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button5 = Button(labelPadding * " " + "NU-EAP only", originX + buttonWidth + spacing, originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button6 = Button(labelPadding * " " + "    NU-All", originX + (buttonWidth * 2) + (spacing * 2), originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button7 = Button(labelPadding * " " + "       <<<", originX, originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button8 = Button(labelPadding * " " + "   Cleanup", originX + buttonWidth + spacing, originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
-button9 = Button(labelPadding * " " + "       >>>", originX + (buttonWidth * 2) + (spacing * 2), originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+titleButton = Button(labelPadding * "  " + kalipi.get_date(), originX, originX, buttonHeight, buttonWidth * 3 + spacing * 2, tron_blu, tron_ora, titleFont)
+button1 = Button(labelPadding * " " + "      WWW", originX, originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button2 = Button(labelPadding * " " + "       FTP", originX + buttonWidth + spacing, originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button3 = Button(labelPadding * " " + "       SQL", originX + (buttonWidth * 2) + (spacing * 2), originY, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button4 = Button(labelPadding * " " + "     RAS-AP", originX, originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button5 = Button(labelPadding * " " + "   darkstat", originX + buttonWidth + spacing, originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button6 = Button(labelPadding * " " + "    ntopng", originX + (buttonWidth * 2) + (spacing * 2), originY + buttonHeight + spacing, buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button7 = Button(labelPadding * " " + "        <<<", originX, originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button8 = Button(labelPadding * " " + " Screen Off", originX + buttonWidth + spacing, originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+button9 = Button(labelPadding * " " + "        >>>", originX + (buttonWidth * 2) + (spacing * 2), originY + (buttonHeight * 2) + (spacing * 2), buttonHeight, buttonWidth, tron_blu, tron_whi, labelFont)
+
 
 
 # Define each button press action
@@ -34,14 +50,15 @@ def button(number):
         if button1.disable == 1:
             return
 
-        # NAT Full
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-nat-full.sh"
-        if kalipi.toggle_script(script):
+	# WWW
+        if kalipi.toggle_service("apache2"):
+        #Stop Service
                 button1.fntColor = green
                 button1.draw()
                 pygame.display.update()
         else:
-                button1.fntColor = tron_light
+        #Start Service
+                button1.fntColor = tron_whi
                 button1.draw()
                 pygame.display.update()
         return
@@ -50,30 +67,30 @@ def button(number):
         if button2.disable == 1:
             return
 
-        # NAT Simple
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-nat-simple.sh"
-        if kalipi.toggle_script(script):
+        # FTP
+        if kalipi.toggle_service("pure-ftpd"):
+        #Stop Service
                 button2.fntColor = green
                 button2.draw()
                 pygame.display.update()
         else:
-                button2.fntColor = tron_light
+        #Start Service
+                button2.fntColor = tron_whi
                 button2.draw()
                 pygame.display.update()
-        return
 
     if number == 3:
         if button3.disable == 1:
             return
 
-        # No Upstream
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream.sh"
-        if kalipi.toggle_script(script):
+        # SQL
+        if kalipi.toggle_service("mysql"):
                 button3.fntColor = green
                 button3.draw()
                 pygame.display.update()
+
         else:
-                button3.fntColor = tron_light
+                button3.fntColor = tron_whi
                 button3.draw()
                 pygame.display.update()
         return
@@ -82,30 +99,32 @@ def button(number):
         if button4.disable == 1:
             return
 
-        # No Upstream EAP
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-eap.sh"
+        # Hostapd RAS-AP
+        script=os.environ["MENUDIR"] + "RAS-AP/ras-ap.sh"
+
         if kalipi.toggle_script(script):
+        # Stop Service
                 button4.fntColor = green
                 button4.draw()
                 pygame.display.update()
         else:
-                button4.fntColor = tron_light
+        #Start Service
+                button4.fntColor = tron_whi
                 button4.draw()
                 pygame.display.update()
-        return
 
     if number == 5:
         if button5.disable == 1:
             return
 
-        # No Upstream EAP only
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-eaponly.sh"
-        if kalipi.toggle_script(script):
+        # darkstat
+        if kalipi.toggle_service("darkstat"):
                 button5.fntColor = green
                 button5.draw()
                 pygame.display.update()
+
         else:
-                button5.fntColor = tron_light
+                button5.fntColor = tron_whi
                 button5.draw()
                 pygame.display.update()
         return
@@ -114,14 +133,14 @@ def button(number):
         if button6.disable == 1:
             return
 
-        # No Upstream All
-        script="/usr/bin/sudo bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-all.sh"
-        if kalipi.toggle_script(script):
+        # ntopng
+        if toggle_ntopng():
                 button6.fntColor = green
                 button6.draw()
                 pygame.display.update()
+
         else:
-                button6.fntColor = tron_light
+                button6.fntColor = tron_whi
                 button6.draw()
                 pygame.display.update()
         return
@@ -132,32 +151,17 @@ def button(number):
 
         # Previous page
         pygame.quit()
-        page=os.environ["MENUDIR"] + "menu-3.py"
+        page=os.environ["MENUDIR"] + "menu-1.py"
         os.execvp("python", ["python", page])
         sys.exit()
 
     if number == 8:
         if button8.disable == 1:
             return
-
-        #Cleanup
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/cleanmana.sh"
-        kalipi.run_cmd(script)
-        button1.fntColor = tron_light
-        button1.draw()
-        button2.fntColor = tron_light
-        button2.draw()
-        button3.fntColor = tron_light
-        button3.draw()
-        button4.fntColor = tron_light
-        button4.draw()
-        button5.fntColor = tron_light
-        button5.draw()
-        button6.fntColor = tron_light
-        button6.draw()
-        button8.fntColor = tron_light
-        button8.draw()
-        return
+        # Screen off
+        retPage="menu-2.py"
+        kalipi.screensaver(retPage)
+        menu2()
 
     if number == 9:
         if button9.disable == 1:
@@ -165,14 +169,14 @@ def button(number):
 
         # Next page
         pygame.quit()
-        page=os.environ["MENUDIR"] + "menu-9.py"
+        page=os.environ["MENUDIR"] + "menu-3.py"
         os.execvp("python", ["python", page])
         sys.exit()
 ##        Buttons          ##
 #############################
 
 
-def menu4():
+def menu2():
 
     # Init screen
     kalipi.screen()
@@ -196,13 +200,12 @@ def menu4():
         button1.draw()
     else:
         # Add button launch code here
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-nat-full.sh"
-        if kalipi.check_script(script):
+        if kalipi.check_service("apache2"):
             button1.fntColor = green
             button1.draw()
         else:
+            button1.fntColor = tron_whi
             button1.draw()
-
 
     # Button 2
     button2.disable = 0  # "1" disables button
@@ -211,13 +214,12 @@ def menu4():
         button2.draw()
     else:
         # Add button launch code here
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-nat-simple.sh"
-        if kalipi.check_script(script):
+        if kalipi.check_service("pure-ftpd"):
             button2.fntColor = green
             button2.draw()
         else:
+            button2.fntColor = tron_whi
             button2.draw()
-
 
     # Button 3
     button3.disable = 0  # "1" disables button
@@ -225,15 +227,14 @@ def menu4():
     if button3.disable == 1:
         button3.draw()
     else:
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream.sh"
-        if kalipi.check_script(script):
+        # Add button launch code here
+        if kalipi.check_service("mysql"):
             button3.fntColor = green
             button3.draw()
         else:
+            button3.fntColor = tron_whi
             button3.draw()
 
-
-    # Second Row
     # Button 4
     button4.disable = 0  # "1" disables button
 
@@ -241,14 +242,14 @@ def menu4():
         button4.draw()
     else:
         # Add button launch code here
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-eap.sh"
-        if kalipi.check_script(script):
+        if kalipi.check_process("hostapd", "ras-ap.conf"):
             button4.fntColor = green
             button4.draw()
         else:
+            button4.fntColor = tron_whi
             button4.draw()
 
-
+    # Second Row
     # Button 5
     button5.disable = 0  # "1" disables button
 
@@ -256,11 +257,11 @@ def menu4():
         button5.draw()
     else:
         # Add button launch code here
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-eaponly.sh"
-        if kalipi.check_script(script):
+        if kalipi.check_service("darkstat"):
             button5.fntColor = green
             button5.draw()
         else:
+            button5.fntColor = tron_whi
             button5.draw()
 
     # Button 6
@@ -270,12 +271,13 @@ def menu4():
         button6.draw()
     else:
         # Add button launch code here
-        script="/usr/bin/sudo /bin/bash " + os.environ["MENUDIR"] + "mana/kalipi-noupstream-eaponly.sh"
-        if kalipi.check_script(script):
+        if kalipi.check_service("ntopng"):
             button6.fntColor = green
             button6.draw()
         else:
+            button6.fntColor = tron_whi
             button6.draw()
+
 
     # Third Row
     # Button 7
@@ -313,12 +315,11 @@ def menu4():
     ##        Input loop       ##
 
     while 1:
-        butNo=kalipi.inputLoop("menu-4.py")
+        butNo=kalipi.inputLoop("menu-2.py")
         button(butNo)
 
     ##        Input loop       ##
     #############################
 
 if __name__ == "__main__":
-    menu4()
-
+    menu2()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import kalipi
 from kalipi import *
 
@@ -30,8 +30,10 @@ def button(number):
 
         # Previous page
         pygame.quit()
-        page=os.environ["MENUDIR"] + "menu-4.py"
-        os.execvp("python", ["python", page])
+        page=os.environ["MENUDIR"] + "menu-pin.py"
+        retPage=kalipi.get_retPage()
+        args = [page, retPage]
+        os.execvp("python", ["python"] + args)
         sys.exit()
 
     if number == 9:
@@ -40,12 +42,13 @@ def button(number):
 
         # Refresh
         pygame.quit()
-        menu9()
+        menu9p()
 
 ##        Buttons          ##
 #############################
 
-def menu9():
+
+def menu9p():
 
     # Init screen
     kalipi.screen()
@@ -62,7 +65,6 @@ def menu9():
     # label 1
     label1.text=labelPadding * " " + kalipi.get_clock()
     label1.draw()
-
 
     # Second Row
     # Button 2
@@ -96,16 +98,15 @@ def menu9():
     ##        Buttons          ##
     #############################
 
-
     #############################
     ##        Input loop       ##
 
     while 1:
-        butNo=kalipi.inputLoop("menu-9.py")
+        butNo=kalipi.inputLoop("menu-9p.py")
         button(butNo)
 
     ##        Input loop       ##
     #############################
 
 if __name__ == "__main__":
-    menu9()
+    menu9p()

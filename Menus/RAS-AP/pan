@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -euo pipefail
 # Ugly hack to work around #787480
 iptables -F
 iptables -t nat -F
